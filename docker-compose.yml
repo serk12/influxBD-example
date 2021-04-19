@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  bd:
+    image: influxdb:2.0.4
+    ports:
+      - 8086:8086
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=myuser
+      - DOCKER_INFLUXDB_INIT_PASSWORD=secure-mypass
+      - DOCKER_INFLUXDB_INIT_BUCKET=my-bucket
+      - DOCKER_INFLUXDB_INIT_ORG=my-org
+      - DOCKER_INFLUXDB_INIT_RETENTION=0
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
+    networks:
+      - connection
+    volumes:
+      - influxdb:/var/lib/influxdb
+  client:
+    build:
+      context: .
+    volumes:
+      - .:/app:ro
+    networks:
+      - connection
+volumes:
+    influxdb:
+networks:
+  connection:
+    driver: bridge
+    name: connection
